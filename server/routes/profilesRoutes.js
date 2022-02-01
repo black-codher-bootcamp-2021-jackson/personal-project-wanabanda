@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 const Profile = mongoose.model("profiles");
 
 const profileRoutes = (app) => {
+  app.get("/", (_, res) => {
+    res.header("Content-Type", "text/html");
+    res.status(200);
+    res.send("This works");
+  });
+
   app.get(`/api/profile`, async (req, res) => {
     const profiles = await Profile.find();
 
