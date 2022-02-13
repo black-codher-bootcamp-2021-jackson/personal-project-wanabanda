@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const jwtSecret = process.env.JWT_SECRET;
 const jwtExpires = process.env.JWT_EXPIRES;
 
@@ -40,9 +41,25 @@ profileSchema.methods.matchPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-//toke
+//get signed token
 profileSchema.methods.getSignedToken = function () {
   return jwt.sign({ id: this._id }, jwtSecret, { expiresIn: jwtExpires });
 };
 
+//forgot password
+profileSchema.methods.getResetPasswordToken = function () {
+  //generate new scecret password token
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  //hash the token
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  //update expires
+  this.resetPasswordExpries = Date.now() + 10 * (60 * 1000);
+
+  return resetToken;
+};
 mongoose.model("profiles", profileSchema);
