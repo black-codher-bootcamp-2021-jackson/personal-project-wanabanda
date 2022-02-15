@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-
 const Profile = mongoose.model("profiles");
+const crypto = require("crypto");
 const resetEmail = require("../utils/resetEmail");
 
 const sendToken = (profile, stausCode, res) => {
@@ -54,15 +54,18 @@ const profileRoutes = (app) => {
         res.status(404).json({ sucess: false, error: "Invaild credentials" });
       }
 
+      //password match
       const isMatch = await profile.matchPassword(password);
 
       if (!isMatch) {
-        res
-          .status(404)
-          .json({ sucess: false, error: "Wrong password, please try again" });
+        return next(
+          res
+            .status(404)
+            .json({ sucess: false, error: "Wrong password, please try again" })
+        );
       }
 
-      resetToken(profile, 200, res);
+      sendToken(profile, 200, res);
     } catch (error) {
       //console.log(error);
       res.status(500).json({ sucess: false, error: error.message });
@@ -77,10 +80,12 @@ const profileRoutes = (app) => {
       const profile = await Profile.findOne({ email });
 
       if (!profile) {
-        return res.status(404).json({
-          error: false,
-          message: "Email is not registered in our database",
-        });
+        return next(
+          res.status(404).json({
+            error: false,
+            message: "Email is not registered in our database",
+          })
+        );
       }
 
       const resetToken = profile.getResetPasswordToken();
@@ -88,7 +93,7 @@ const profileRoutes = (app) => {
       await profile.save();
 
       //!!!!! configure to index.js !!!!!!
-      const resetUrl = `/api/passwordreset/${resetToken}`;
+      const resetUrl = `http://localhost:8080/api/resetpassword/${resetToken}`;
 
       const message = `
       <h1>You have requested a password reset</h1>
@@ -111,6 +116,46 @@ const profileRoutes = (app) => {
 
         return next(res.status(500).send("Email could not be sent"));
       }
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.put(`/api/resetpassword/:resetToken`, async (req, res, next) => {
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.resetToken)
+      .digest("hex");
+
+    try {
+      const profile = await Profile.findOne({
+        //vefity they are the same
+        resetPasswordToken,
+        //password is stilll vaild
+        resetPasswordExpries: { $gt: Date.now() },
+      });
+
+      if (!profile) {
+        return next(
+          res.status(400).json({
+            error: false,
+            message: "Invaild rest token",
+          })
+        );
+      }
+      //save new password
+      profile.password = req.body.password;
+      profile.resetPasswordToken = undefined;
+      profile.resetPasswordExpries = undefined;
+
+      //hash passwprd
+      await profile.save();
+
+      res.status(201).json({
+        success: true,
+        message: "Password Updated Success",
+        token: profile.getSignedToken(),
+      });
     } catch (error) {
       next(error);
     }

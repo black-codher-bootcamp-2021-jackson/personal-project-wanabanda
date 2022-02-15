@@ -5,7 +5,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 
 const Home = () => {
   const [searchRecipes, setSearchRecipes] = useState("");
-  console.log(API_KEY);
+  console.log(process.env.REACT_APP_API_KEY);
   async function findRecipes(value) {
     const recipes = await fetch(
       `https://api.spoonacular.com/recipes/complexSearch?${value}&number=100&apiKey=${API_KEY}`
