@@ -14,12 +14,6 @@ const profileRoutes = (app) => {
     res.status(200);
   });
 
-  app.get(`/api/profile`, async (req, res) => {
-    const profiles = await Profile.find();
-
-    return res.status(200).send(profiles);
-  });
-
   //register new user
   app.post(`/api/register`, async (req, res) => {
     const { username, email, password } = req.body;

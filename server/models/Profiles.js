@@ -18,9 +18,6 @@ const profileSchema = new Schema({
     ],
   },
   password: { type: String, required: true, minlength: 6, select: false },
-  favouritRecipes: Array,
-  lander: String,
-  shopping: String,
 
   resetPasswordToken: String,
   resetPasswordExpries: Date,

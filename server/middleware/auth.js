@@ -26,6 +26,6 @@ exports.protect = async (req, res, next) => {
     req.profile = profile;
     return next();
   } catch (error) {
-    return next(res.status(401).send("Not Authorised1"));
+    return next(res.status(401).send("Not Authorised"));
   }
 };
