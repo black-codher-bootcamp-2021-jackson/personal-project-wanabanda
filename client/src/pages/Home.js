@@ -30,12 +30,12 @@ const Home = () => {
 
   //search(): Searches the iTunes API for the terms entered by the user
   async function search(value) {
-    const url = `https://api.spoonacular.com/recipes/complexSearch?lime&number=100&apiKey=${API_KEY}`;
+    const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${value}&number=100&apiKey=${API_KEY}`;
 
     const results = await fetch(url).then((res) => res.json());
     const savedIds = saved.map((item) => item.id);
     if (!results.error) {
-      setItems(results.results.filter((item) => !savedIds.includes(item.id)));
+      setItems(results.filter((item) => !savedIds.includes(item.id)));
     }
   }
   return (
