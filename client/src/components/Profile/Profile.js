@@ -5,7 +5,7 @@ const Profile = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) =>
-        localStorage.getItem("token") ? (
+        localStorage.getItem("authtoken") ? (
           <Component {...props} />
         ) : (
           <Navigate to="/login" />

@@ -1,0 +1,60 @@
+.form-group,
+.form-group label,
+.form-group input {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+.form {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.form-content {
+  width: 380px;
+  padding: 1.5rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+  background: #dc7027;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+}
+
+.form-group input {
+  padding: 10px 20px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background-color: #eee;
+  outline-width: 0;
+  font-size: 1rem;
+}
+
+.form-heading {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.forgotpassword {
+  font-size: 0.7rem;
+}
+
+.subtext {
+  font-size: 0.7rem;
+}
+
+.form Link {
+  text-decoration: none;
+  cursor: pointer;
+}
+.submitBtn {
+  padding: 10px 20px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1rem;
+  border: none;
+  background-color: #fff;
+  color: #dc7027;
+}

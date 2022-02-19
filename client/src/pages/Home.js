@@ -1,37 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
+//import axios from "axios";
 import Search from "../components/Search";
-
-const API_KEY = process.env.REACT_APP_API_KEY;
+import RecipeList from "../components/RecipeList";
+const API_KEY = process.env.API_KEY;
 
 const Home = () => {
-  const [searchRecipes, setSearchRecipes] = useState("");
-  console.log(process.env.REACT_APP_API_KEY);
-  async function findRecipes(value) {
-    const recipes = await fetch(
-      `https://api.spoonacular.com/recipes/complexSearch?${value}&number=100&apiKey=${API_KEY}`
-    ).then((recipes) =>
-      recipes
-        .json()
-        .then((data) => {
-          setSearchRecipes(data);
-          console.log(data);
-        })
-        .catch(() => {
-          console.log("erro");
-          console.log(process.env.SPOONACULAR_API_KEY);
-        })
-    );
-    return recipes;
-  }
+  const [items, setItems] = useState([]);
+  const [term, setTerm] = useState("");
+  const [saved, setSaved] = useState([]);
+  //const authToken = localStorage.getItem("token");
 
+  //search(): Searches the API for the terms entered by the user
+  /*useEffect(() => {
+    const axiosData = async () => {
+      await axios
+        .get(
+          `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}`
+        )
+        .then(function (response) {
+          setItems(response.data.results);
+        })
+        .catch(function (error) {
+          console.log(error.response.data);
+        });
+    };
+    axiosData();
+  }, []);
+*/
+
+  //search(): Searches the iTunes API for the terms entered by the user
+  async function search(value) {
+    const url = ` https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}`;
+    const results = await fetch(url).then((res) => res.json());
+    const savedIds = saved.map((item) => item.id);
+    if (!results.error) {
+      setItems(results.results.filter((item) => !savedIds.includes(item.id)));
+    }
+  }
   return (
-    <div>
-      <Search
-        findRecipes={findRecipes}
-        searchRecipes={searchRecipes}
-        setSearchRecipes={setSearchRecipes}
-      />
-    </div>
+    <>
+      <Fragment>
+        <Search search={search} term={term} setTerm={setTerm} />
+        <RecipeList
+          items={items}
+          store="saved"
+          //addToSaved={addToSaved}
+          //removeFromSaved={removeFromSaved}
+        />
+      </Fragment>
+    </>
   );
 };
 
