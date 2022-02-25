@@ -13,7 +13,6 @@ const Register = ({ history }) => {
   //check if user is already logged in
   useEffect(() => {
     if (localStorage.getItem("authToken")) {
-      history.push("/");
     }
   }, [history]);
 
@@ -43,8 +42,6 @@ const Register = ({ history }) => {
       );
 
       localStorage.setItem("authToken", data.token);
-
-      history.push("/");
     } catch (error) {
       setError(error.response.data.error);
       setTimeout(() => {

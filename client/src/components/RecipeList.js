@@ -6,19 +6,21 @@ const RecipeList = ({ items, ...props }) => {
   return (
     <div className="recipe-list">
       <div>
+        {props.stored === "library"}
         {items.length === 0 ? (
-          <div className="empty">No items found... </div>
+          <div className="empty"> </div>
         ) : (
           items
             .filter((item) => props.stored === "saved" || !item.inSaved)
             .map((item) => (
               <Recipe
-                className="r-content"
+                className="r"
                 key={item.id}
                 item={item}
                 img={item.image}
                 addToSaved={props.addToSaved}
                 removeFromSaved={props.removeFromSaved}
+                //showRecipes={showRecipes}
                 {...props}
               />
             ))

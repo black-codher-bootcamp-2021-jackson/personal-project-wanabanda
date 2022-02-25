@@ -1,8 +1,10 @@
 const jwt = require("jsonwebtoken");
-const Profile = require("../models/Profiles");
+const mongoose = require("mongoose");
+const Profile = mongoose.model("profiles");
 jwtSecret = process.env.JWT_SECRET;
 
 exports.protect = async (req, res, next) => {
+  let token = null;
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("bearer")
@@ -11,21 +13,21 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!token) {
-    return next(res.status(401).send("Not Authorized"));
+    return next(res.status(401).send("Not authorized to access this route"));
   }
 
-  //decode json token
   try {
     const decoded = jwt.verify(token, jwtSecret);
-    const profile = await Profile.findById(decoded._id);
+    const profile = await Profile.findById(decoded.id);
 
-    //verify user exist
     if (!profile) {
-      return next(res.status(404).send("No user was found"));
+      return next(res.status(404).send("No user found with this id"));
     }
+
     req.profile = profile;
-    return next();
-  } catch (error) {
-    return next(res.status(401).send("Not Authorised"));
+
+    next();
+  } catch (err) {
+    return next(res.status(404).send("Not authorized to access this router"));
   }
 };

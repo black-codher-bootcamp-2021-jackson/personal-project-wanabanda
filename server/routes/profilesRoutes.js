@@ -154,6 +154,7 @@ const profileRoutes = (app) => {
       next(error);
     }
   });
+
   /*
   app.post(`/api/profile`, async (req, res) => {
     const profile = await Profile.create(req.body);

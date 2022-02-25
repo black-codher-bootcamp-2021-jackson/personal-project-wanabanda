@@ -21,8 +21,6 @@ const profileSchema = new Schema({
 
   resetPasswordToken: String,
   resetPasswordExpries: Date,
-  //add fav
-  //pantry
 });
 
 //encpty password before saving in database
